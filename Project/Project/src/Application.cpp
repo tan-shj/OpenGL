@@ -41,9 +41,6 @@ int main(void)
     std::cout << glGetString(GL_VERSION) << std::endl;
 
     {
-        GLCall(glEnable(GL_BLEND));//使能混合
-        GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));//设置Src_ALPHA和dest_ALPHA
-
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
