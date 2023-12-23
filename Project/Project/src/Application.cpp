@@ -3,21 +3,14 @@
 
 #include <iostream>
 
-#include "VertexBufferLayout.h"
 #include "renderer.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "VertexArray.h"
-#include "Shader.h"
-#include "Texture.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
 #include "tests/TestClearColor.h"
+#include "tests/TestTexture2D.h"
 
 int main(void)
 {
@@ -48,56 +41,9 @@ int main(void)
     std::cout << glGetString(GL_VERSION) << std::endl;
 
     {
-        //顶点、纹理
-        float positions[] = {
-            -50.0f,-50.0f,0.0f,0.0f,
-             50.0f,-50.0f,1.0f,0.0f,
-             50.0f, 50.0f,1.0f,1.0f,
-            -50.0f, 50.0f,0.0f,1.0f,
-        };
-
-        //顶点缓存
-        unsigned int indices[] = {
-            0, 1, 2,
-            2, 3, 0
-        };
-
         GLCall(glEnable(GL_BLEND));//使能混合
         GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));//设置Src_ALPHA和dest_ALPHA
 
-        //绑定顶点数组
-        unsigned int vao;
-        GLCall(glGenVertexArrays(1, &vao));
-        GLCall(glBindVertexArray(vao));
-
-        VertexArray va;
-        VertexBuffer vb(positions, 4 * 4 * sizeof(float));
-
-        VertexBufferLayout layout;
-        layout.Push<float>(2);
-        layout.Push<float>(2);
-        va.AddBuffer(vb, layout);
-
-        IndexBuffer ib(indices, 6);
-
-        glm::mat4 proj  = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);//正交投影矩阵
-        glm::mat4 view  = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));//模拟相机移动
-
-        Shader shader("res/shaders/Basic.shader");
-        shader.Bind();
-
-        Texture texture("res/texture/OpenGL.jpg");
-        texture.Bind();
-        shader.SetUniform1i("u_Texture", 0);
-
-        va.Unbind();
-        vb.Unbind();
-        ib.Unbind();
-        shader.Unbind();
-        texture.Unbind();
-
-        Render render;
-        
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -112,19 +58,16 @@ int main(void)
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 330 core");
 
-        glm::vec3 translationA(200, 200, 0);
-        glm::vec3 translationB(400, 200, 0);
-
         test::Test* currentTest = nullptr;
         test::TestMenu* TestMenu = new test::TestMenu(currentTest);
         currentTest = TestMenu;
 
         TestMenu->RegisterTest<test::TestClearColor>("Clear Color");
+        TestMenu->RegisterTest<test::TestTexture2D>("2D Texture");
 
         while (!glfwWindowShouldClose(window))
         {
             GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
-            render.Clear();
 
             // Start the Dear ImGui frame
             ImGui_ImplOpenGL3_NewFrame();
@@ -144,32 +87,6 @@ int main(void)
                 currentTest->OnImGuiRender();
                 ImGui::End();
             }
-            
-            {
-                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);//模型向左向上移
-                glm::mat4 mvp = proj * view * model;//从右往左乘
-                shader.Bind();
-                shader.SetUniformMat4f("u_MVP", mvp);
-                render.Draw(va, ib, shader);
-            }
-            
-            {
-                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);//模型向左向上移
-                glm::mat4 mvp = proj * view * model;//从右往左乘
-                shader.Bind();
-                shader.SetUniformMat4f("u_MVP", mvp);
-                render.Draw(va, ib, shader);
-            }
-
-            texture.Bind();
-            shader.SetUniform1i("u_Texture", 0);
-
-            {
-                ImGui::SliderFloat3("TranslationA ", &translationA.x, 0.0f, 960.0f);
-                ImGui::SliderFloat3("TranslationB ", &translationB.x, 0.0f, 960.0f);
-                ImGui::Text("Applocation average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            }
-
             // Rendering
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
