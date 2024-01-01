@@ -64,7 +64,7 @@ namespace test
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);//模型向左向上移
 			glm::mat4 mvp = m_Proj * m_View * model;//从右往左乘
 			m_Shader->Bind();
-			m_Shader->SetUniformMat4f("u_MVP", mvp);
+			m_Shader->SetUniformMat4("u_MVP", mvp);
 			render.Draw(*m_VAO, *m_Indexbuffer, *m_Shader);
 		}
 
@@ -72,7 +72,7 @@ namespace test
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationB);//模型向左向上移
 			glm::mat4 mvp = m_Proj * m_View * model;//从右往左乘
 			m_Shader->Bind();
-			m_Shader->SetUniformMat4f("u_MVP", mvp);
+			m_Shader->SetUniformMat4("u_MVP", mvp);
 			render.Draw(*m_VAO, *m_Indexbuffer, *m_Shader);
 		}
 
