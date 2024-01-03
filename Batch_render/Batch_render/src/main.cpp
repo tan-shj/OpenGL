@@ -59,6 +59,7 @@ int main()
 
     Shader shader("res/Shader/Basic.shader");
     shader.Bind();
+    shader.SetUniform4f("translation", glm::vec4(0.5f, 0, 0, 0));
 
     Texture texture("res/Texture/OpenGL.jpg");
     texture.Bind();
