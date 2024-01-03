@@ -26,12 +26,12 @@ int main()
         return -1;
     }
 
-    //x,y,z
+    //x,y,z   vertex  color  texcoord
     GLfloat vertices[] = {
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-         0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-         0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  2.0f, 0.0f,
+         0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  2.0f, 2.0f,
+        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 2.0f,
     };
 
     GLuint indices[] = {
@@ -48,28 +48,32 @@ int main()
     GLCall(glBindVertexArray(vao));
 
     VertexArray va;
-    VertexBuffer vb(vertices, 5 * 4 * sizeof(GLfloat));
+    VertexBuffer vb(vertices, 8 * 4 * sizeof(GLfloat));
 
     VertexBufferLayout layout;
-    layout.Push<float>(3);
-    layout.Push<float>(2);
+    layout.Push<float>(3);//vertex
+    layout.Push<float>(3);//color
+    layout.Push<float>(2);//texcoord
     va.AddBuffer(vb, layout);
 
     IndexBuffer ib(indices, 6);
 
     Shader shader("res/Shader/Basic.shader");
     shader.Bind();
-    shader.SetUniform4f("translation", glm::vec4(0.5f, 0, 0, 0));
 
-    Texture texture("res/Texture/OpenGL.jpg");
-    texture.Bind();
-    shader.SetUniform1i("u_Texture", 0);
+    Texture texture1("res/Texture/OpenGL.jpg",GL_CLAMP_TO_EDGE);
+    Texture texture2("res/Texture/ChernoLogo.png",GL_REPEAT);
+    texture1.Bind(0);
+    shader.SetUniform1i("u_Texture1", 0);
+    texture2.Bind(1);
+    shader.SetUniform1i("u_Texture2", 1);
 
     va.Unbind();
     vb.Unbind();
     ib.Unbind();
     shader.Unbind();
-    texture.Unbind();
+    texture1.Unbind();
+    texture2.Unbind();
 
     Render render;
 
@@ -78,7 +82,8 @@ int main()
         GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
         render.Clear();
 
-        texture.Bind();
+        texture1.Bind(0);
+        texture2.Bind(1);
         render.Draw(va, ib, shader);
 
         glfwPollEvents();

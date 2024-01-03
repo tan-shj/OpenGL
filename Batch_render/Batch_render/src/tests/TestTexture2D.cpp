@@ -38,7 +38,7 @@ namespace test
 		m_Shader = std::make_unique<Shader>("res/shaders/Basic.shader");
         m_Shader->Bind();
 
-		m_Texture = std::make_unique<Texture>("res/texture/OpenGL.jpg");
+		m_Texture = std::make_unique<Texture>("res/texture/OpenGL.jpg", GL_CLAMP_TO_EDGE);
 		m_Shader->SetUniform1i("u_Texture", 0);
 	}
 
