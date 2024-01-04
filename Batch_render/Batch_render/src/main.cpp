@@ -1,6 +1,9 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "Renderer.h"
 #include "VertexBufferLayout.h"
@@ -29,9 +32,9 @@ int main()
     //x,y,z   vertex  color  texcoord
     GLfloat vertices[] = {
         -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  2.0f, 0.0f,
-         0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  2.0f, 2.0f,
-        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 2.0f,
+         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+         0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f,
     };
 
     GLuint indices[] = {
@@ -81,10 +84,25 @@ int main()
     {
         GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
         render.Clear();
-
+        
+        shader.Bind(); 
         texture1.Bind(0);
         texture2.Bind(1);
-        render.Draw(va, ib, shader);
+ 
+        {
+            glm::mat4 trans = glm::rotate(glm::mat4(1.0f), (GLfloat)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.0, 0.0, 1.0));//沿Z轴旋转90度/*glm::radians(90.0f)*/
+            //trans = glm::scale(trans, glm::vec3(1.0, 1.0, 1.0));//每个轴缩放倍数
+            trans = glm::translate(trans, glm::vec3(0.5f, 0.0f, 0.0f));//位移
+            shader.SetUniformMat4("transform", trans);
+            render.Draw(va, ib, shader);
+        }
+
+        {
+            glm::mat4 trans = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, 0.5f, 0.0f));//位移
+            trans = glm::scale(trans, glm::vec3(sin(glfwGetTime()), sin(glfwGetTime()), sin(glfwGetTime())));//每个轴缩放倍数
+            shader.SetUniformMat4("transform", trans);
+            render.Draw(va, ib, shader);
+        }
 
         glfwPollEvents();
         glfwSwapBuffers(window);
