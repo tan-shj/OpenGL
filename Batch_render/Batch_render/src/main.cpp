@@ -9,6 +9,26 @@
 #include "VertexBufferLayout.h"
 #include "Texture.h"
 
+// Function prototypes
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void do_movement();
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+
+// Camera
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+GLfloat yaw = -90.0f;	// Yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right (due to how Eular angles work) so we initially rotate a bit to the left.
+GLfloat pitch = 0.0f;
+GLfloat lastX = 800.0 / 2.0;
+GLfloat lastY = 600.0 / 2.0;
+
+bool keys[1024];
+bool firstMouse = true;
+GLfloat aspect = glm::radians(45.0f);
+
 int main()
 {
     glfwInit();
@@ -21,6 +41,11 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(window);
+
+    // Set the required callback functions
+    glfwSetKeyCallback(window, key_callback);//按键
+    glfwSetCursorPosCallback(window, mouse_callback);//鼠标
+    glfwSetScrollCallback(window, scroll_callback);//滚轮
 
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK)
@@ -126,6 +151,9 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
+        glfwPollEvents();
+        do_movement();
+
         GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f)); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         render.Clear();
@@ -135,39 +163,88 @@ int main()
         texture2.Bind(1);
  
         {
-            //glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0, 0.0, 0.0));//模型矩阵--旋转(rotate)、平移(translate)、缩放(scale)
-            glm::mat4 model = glm::rotate(glm::mat4(1.0f), (GLfloat)glfwGetTime() * glm::radians(-90.0f), glm::vec3(0.5, 1.0, 0.0));//模型矩阵--旋转(rotate)、平移(translate)、缩放(scale)
-            glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, -5.0));//观察矩阵--相机位置；通过旋转、平移将世界坐标转换到观察空间--相机只能移动，不能旋转
-            glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);//投影矩阵--parameter->视野、宽高比、平截头体的近平面、平截头体的远平面
+            glm::mat4 model = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime() * glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+            glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+            glm::mat4 proj = glm::perspective(aspect, 800.0f / 600.0f, 0.1f, 100.0f);
             glm::mat4 MVP = proj * view * model;
             shader.SetUniformMat4("u_MVP", MVP);
             render.Draw(va, ib, shader);
         }
-
-        //{
-            //glm::mat4 model = glm::rotate(glm::mat4(1.0f), (GLfloat)glfwGetTime() * glm::radians(-90.0f), glm::vec3(0.0, 1.0, 0.0));//模型矩阵--旋转(rotate)、平移(translate)、缩放(scale)
-            //glm::mat4 model = glm::rotate(glm::mat4(1.0f), (GLfloat)glfwGetTime() * glm::radians(-55.0f), glm::vec3(0.0, 1.0, 0.0));
-            //glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, 0.0));
-            //glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-            //glm::mat4 MVP = proj * view * model;
-            //shader.SetUniformMat4("u_MVP", view);
-            //render.Draw(va, ib, shader);
-        //}
-
-       /* {
-            glm::mat4 model = glm::rotate(glm::mat4(1.0f), (GLfloat)glfwGetTime() * glm::radians(-55.0f), glm::vec3(0.0, 0.0, 1.0));
-            glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, -3.0));
-            glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-            glm::mat4 MVP = proj * view * model;
-            shader.SetUniformMat4("u_MVP", MVP);
-            render.Draw(va, ib, shader);
-        }*/
-
-        glfwPollEvents();
         glfwSwapBuffers(window);
     }
 
     glfwTerminate();
 
     return 0;
+}
+
+// Is called whenever a key is pressed/released via GLFW
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    if (key >= 0 && key < 1024)
+    {
+        if (action == GLFW_PRESS)
+            keys[key] = true;
+        else if (action == GLFW_RELEASE)
+            keys[key] = false;
+    }
+}
+
+void do_movement()
+{
+    // Camera controls
+    GLfloat cameraSpeed = 0.01f;
+    if (keys[GLFW_KEY_W])
+        cameraPos += cameraSpeed * cameraFront;
+    if (keys[GLFW_KEY_S])
+        cameraPos -= cameraSpeed * cameraFront;
+    if (keys[GLFW_KEY_A])
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    if (keys[GLFW_KEY_D])
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    GLfloat xoffset = xpos - lastX;
+    GLfloat yoffset = lastY - ypos;
+    lastX = xpos;
+    lastY = ypos;
+
+    GLfloat sensitivity = 0.05;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    yaw += xoffset;
+    pitch += yoffset;
+
+    if (pitch > 89.0f)
+        pitch = 89.0f;
+    if (pitch < -89.0f)
+        pitch = -89.0f;
+
+    glm::vec3 front;
+    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.y = sin(glm::radians(pitch));
+    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    cameraFront = glm::normalize(front);
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    if (aspect >= 1.0f && aspect <= 45.0f)
+        aspect -= yoffset;
+    if (aspect <= 1.0f)
+        aspect = 1.0f;
+    if (aspect >= 45.0f)
+        aspect = 45.0f;
 }
