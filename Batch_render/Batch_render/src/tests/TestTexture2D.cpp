@@ -28,7 +28,7 @@ namespace test
         GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));//…Ë÷√Src_ALPHA∫Õdest_ALPHA
 
         m_VAO = std::make_unique<VertexArray>();
-		m_Vertexbuffer = std::make_unique<VertexBuffer>(positions, 4 * 4 * sizeof(float));
+		m_Vertexbuffer = std::make_unique<VertexBuffer>(positions, 4 * 4 * sizeof(float), GL_STATIC_DRAW);
         VertexBufferLayout layout;
         layout.Push<float>(2);
         layout.Push<float>(2);

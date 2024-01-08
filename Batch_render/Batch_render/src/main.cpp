@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <array>
 
 #include "Renderer.h"
 #include "VertexBufferLayout.h"
@@ -28,6 +29,96 @@ GLfloat lastY = 600.0 / 2.0;
 bool keys[1024];
 bool firstMouse = true;
 GLfloat aspect = glm::radians(45.0f);
+
+struct vec3 { float x; float y; float z; };
+struct vec2 { float x; float y;};
+
+struct Vertex
+{
+    vec3 position;
+    vec2 texcoords;
+};
+
+static std::array<Vertex, 4> CreatQuadz(float x, float y, float z)
+{
+    float size = 1.0f;
+
+    Vertex v0;
+    v0.position = { x, y, z };
+    v0.texcoords = { 0.0f, 0.0f };
+
+
+    Vertex v1;
+    v1.position = { x+size, y, z };
+    v1.texcoords = { 1.0f, 0.0f };
+
+      
+    Vertex v2;
+    v2.position = { x+size, y+size, z };
+    v2.texcoords = { 1.0f, 1.0f };
+
+
+    Vertex v3;
+    v3.position = { x, y+size, z };
+    v3.texcoords = { 0.0f, 1.0f };
+
+
+    return { v0,v1,v2,v3 };
+}
+
+static std::array<Vertex, 4> CreatQuadx(float x, float y, float z)
+{
+    float size = 1.0f;
+
+    Vertex v0;
+    v0.position = { x, y, z };
+    v0.texcoords = { 0.0f, 0.0f };
+
+
+    Vertex v1;
+    v1.position = { x, y + size, z};
+    v1.texcoords = { 1.0f, 0.0f };
+
+
+    Vertex v2;
+    v2.position = { x, y + size, z + size};
+    v2.texcoords = { 1.0f, 1.0f };
+
+
+    Vertex v3;
+    v3.position = { x, y, z + size};
+    v3.texcoords = { 0.0f, 1.0f };
+
+
+    return { v0,v1,v2,v3 };
+}
+
+static std::array<Vertex, 4> CreatQuady(float x, float y, float z)
+{
+    float size = 1.0f;
+
+    Vertex v0;
+    v0.position = { x, y, z };
+    v0.texcoords = { 0.0f, 0.0f };
+
+
+    Vertex v1;
+    v1.position = { x + size, y, z };
+    v1.texcoords = { 1.0f, 0.0f };
+
+
+    Vertex v2;
+    v2.position = { x + size, y, z + size };
+    v2.texcoords = { 1.0f, 1.0f };
+
+
+    Vertex v3;
+    v3.position = { x, y, z + size };
+    v3.texcoords = { 0.0f, 1.0f };
+
+
+    return { v0,v1,v2,v3 };
+}
 
 int main()
 {
@@ -58,7 +149,7 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     //x,y,z   vertex  color  texcoord
-    GLfloat vertices[] = {
+    /*GLfloat vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
          0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
          0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
@@ -100,16 +191,30 @@ int main()
          0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
         -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };
+    };*/
 
     GLuint indices[] = {
-        0,   1,  2,  3,  4,  5,
-        6,   7,  8,  9, 10, 11,
-        12, 13, 14, 15, 16, 17,
-        18, 19, 20, 21, 22, 23,
-        24, 25, 26, 27, 28, 29,
-        30, 31, 32, 33, 34, 35
+        0,   1,  2,  2,  3,  0,
+        4,   5,  6,  6,  7,  4,
+        8,   9, 10, 10, 11,  8,
+       12,  13, 14, 14, 15, 12,
+       16,  17, 18, 18, 19, 16,
+       20,  21, 22, 22, 23, 20
     };
+
+    auto q0 = CreatQuadz(-0.5f, -0.5f, -0.5f);
+    auto q1 = CreatQuadz(-0.5f, -0.5f,  0.5f);
+    auto q2 = CreatQuadx(-0.5f, -0.5f, -0.5f);
+    auto q3 = CreatQuadx( 0.5f, -0.5f, -0.5f); 
+    auto q4 = CreatQuady(-0.5f, -0.5f, -0.5f);
+    auto q5 = CreatQuady(-0.5f,  0.5f, -0.5f);
+    Vertex vertices[24];
+    memcpy(vertices+q0.size()*0, q0.data(), q0.size() * sizeof(Vertex));
+    memcpy(vertices+q0.size()*1, q1.data(), q1.size() * sizeof(Vertex));
+    memcpy(vertices+q0.size()*2, q2.data(), q2.size() * sizeof(Vertex));
+    memcpy(vertices+q0.size()*3, q3.data(), q3.size() * sizeof(Vertex));
+    memcpy(vertices+q0.size()*4, q4.data(), q4.size() * sizeof(Vertex));
+    memcpy(vertices+q0.size()*5, q5.data(), q5.size() * sizeof(Vertex));
 
     GLCall(glEnable(GL_BLEND));//使能混合
     GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));//设置Src_ALPHA和dest_ALPHA
@@ -120,7 +225,7 @@ int main()
     GLCall(glBindVertexArray(vao));
 
     VertexArray va;
-    VertexBuffer vb(vertices, 36 * 5 * sizeof(GLfloat));
+    VertexBuffer vb(nullptr, sizeof(Vertex) * 1000, GL_DYNAMIC_DRAW);
 
     VertexBufferLayout layout;
     layout.Push<float>(3);//vertex
@@ -136,8 +241,10 @@ int main()
     Texture texture1("res/Texture/OpenGL.jpg", GL_REPEAT);
     Texture texture2("res/Texture/ChernoLogo.png",GL_REPEAT);
     texture1.Bind(0);
-    shader.SetUniform1i("u_Texture1", 0);
     texture2.Bind(1);
+    //int samples[2] = { 0, 1 };
+    //shader.SetUniform1iv("u_Texture", 2, samples);
+    shader.SetUniform1i("u_Texture1", 0);
     shader.SetUniform1i("u_Texture2", 1);
 
     va.Unbind();
@@ -153,6 +260,9 @@ int main()
     {
         glfwPollEvents();
         do_movement();
+
+        vb.Bind();
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
         GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f)); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
