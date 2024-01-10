@@ -229,28 +229,31 @@ int main()
 
     VertexBufferLayout layout;
     layout.Push<float>(3);//vertex
-    //layout.Push<float>(3);//color
     layout.Push<float>(2);//texcoord
     va.AddBuffer(vb, layout);
 
     IndexBuffer ib(indices, 36);
  
-    Shader shader("res/Shader/Basic.shader");
-    shader.Bind();
+    Shader shader1("res/Shader/Basic.shader");
+    Shader shader2("res/Shader/Light.shader");
 
     Texture texture1("res/Texture/OpenGL.jpg", GL_REPEAT);
     Texture texture2("res/Texture/ChernoLogo.png",GL_REPEAT);
     texture1.Bind(0);
     texture2.Bind(1);
-    //int samples[2] = { 0, 1 };
-    //shader.SetUniform1iv("u_Texture", 2, samples);
-    shader.SetUniform1i("u_Texture1", 0);
-    shader.SetUniform1i("u_Texture2", 1);
+
+    shader1.Bind();
+    shader1.SetUniform1i("u_Texture1", 0);
+    shader1.SetUniform1i("u_Texture2", 0);
+    shader1.SetUniform3f("ObjectColor", glm::vec3(1.0f, 0.5f, 0.31f));//Éºº÷ºì
+    shader1.SetUniform3f("LightColor", glm::vec3(1.0f, 1.0f, 1.0f));//°×
+    shader2.Bind();
 
     va.Unbind();
     vb.Unbind();
     ib.Unbind();
-    shader.Unbind();
+    shader1.Unbind();
+    shader2.Unbind();
     texture1.Unbind();
     texture2.Unbind();
 
@@ -268,17 +271,29 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         render.Clear();
         
-        shader.Bind(); 
         texture1.Bind(0);
         texture2.Bind(1);
  
         {
+            shader1.Bind(); 
             glm::mat4 model = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime() * glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
             glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
             glm::mat4 proj = glm::perspective(aspect, 800.0f / 600.0f, 0.1f, 100.0f);
             glm::mat4 MVP = proj * view * model;
-            shader.SetUniformMat4("u_MVP", MVP);
-            render.Draw(va, ib, shader);
+            shader1.SetUniformMat4("u_MVP", MVP);
+            render.Draw(va, ib, shader1);
+        }
+
+        {
+            shader2.Bind();
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));//¹âÕÕµÄÎ»ÖÃ
+            model = glm::scale(model, glm::vec3(0.2f));
+            model = glm::rotate(model, (float)glfwGetTime() * glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+            glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+            glm::mat4 proj = glm::perspective(aspect, 800.0f / 600.0f, 0.1f, 100.0f);
+            glm::mat4 MVP = proj * view * model;
+            shader2.SetUniformMat4("u_MVP", MVP);
+            render.Draw(va, ib, shader2);
         }
         glfwSwapBuffers(window);
     }
