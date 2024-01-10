@@ -72,6 +72,9 @@
     <ClCompile Include="src\vendor\stb_image\stb_image.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\TestBatchRender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -978,6 +981,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\vendor\stb_image\stb_image.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tests\TestBatchRender.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
