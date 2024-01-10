@@ -21,7 +21,7 @@ int main(void)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);//指定创建的上下文的OpenGL的配置文件为核心版本
 
-    GLFWwindow* window = glfwCreateWindow(640, 480, "OpenGL", nullptr, nullptr);//宽，高，窗口名字
+    GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL", nullptr, nullptr);//宽，高，窗口名字
     if (!window)
     {
         std::cout << "Failed to create GLFW window" << std::endl;

@@ -234,7 +234,7 @@ int main()
     va.AddBuffer(vb, layout);
 
     IndexBuffer ib(indices, 36);
-
+ 
     Shader shader("res/Shader/Basic.shader");
     shader.Bind();
 
