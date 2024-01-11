@@ -37,31 +37,35 @@ struct Vertex
 {
     vec3 position;
     vec2 texcoords;
+    vec3 normal;
 };
 
 static std::array<Vertex, 4> CreatQuadz(float x, float y, float z)
 {
     float size = 1.0f;
+    float direction;
+
+    z < 0 ? (direction = -1.0f) : (direction = 1.0f);
 
     Vertex v0;
     v0.position = { x, y, z };
     v0.texcoords = { 0.0f, 0.0f };
-
+    v0.normal = { 0.0f, 0.0f, direction };
 
     Vertex v1;
     v1.position = { x+size, y, z };
     v1.texcoords = { 1.0f, 0.0f };
-
+    v1.normal = { 0.0f, 0.0f, direction };
       
     Vertex v2;
     v2.position = { x+size, y+size, z };
     v2.texcoords = { 1.0f, 1.0f };
-
+    v2.normal = { 0.0f, 0.0f, direction };
 
     Vertex v3;
     v3.position = { x, y+size, z };
     v3.texcoords = { 0.0f, 1.0f };
-
+    v3.normal = { 0.0f, 0.0f, direction };
 
     return { v0,v1,v2,v3 };
 }
@@ -69,26 +73,29 @@ static std::array<Vertex, 4> CreatQuadz(float x, float y, float z)
 static std::array<Vertex, 4> CreatQuadx(float x, float y, float z)
 {
     float size = 1.0f;
+    float direction;
+
+    x < 0 ? (direction = -1.0f) : (direction = 1.0f);
 
     Vertex v0;
     v0.position = { x, y, z };
     v0.texcoords = { 0.0f, 0.0f };
-
+    v0.normal = { direction, 0.0f, 0.0f };
 
     Vertex v1;
     v1.position = { x, y + size, z};
     v1.texcoords = { 1.0f, 0.0f };
-
+    v1.normal = { direction, 0.0f, 0.0f };
 
     Vertex v2;
     v2.position = { x, y + size, z + size};
     v2.texcoords = { 1.0f, 1.0f };
-
+    v2.normal = { direction, 0.0f, 0.0f };
 
     Vertex v3;
     v3.position = { x, y, z + size};
     v3.texcoords = { 0.0f, 1.0f };
-
+    v3.normal = { direction, 0.0f, 0.0f };
 
     return { v0,v1,v2,v3 };
 }
@@ -96,26 +103,29 @@ static std::array<Vertex, 4> CreatQuadx(float x, float y, float z)
 static std::array<Vertex, 4> CreatQuady(float x, float y, float z)
 {
     float size = 1.0f;
+    float direction;
+
+    y < 0 ? (direction = -1.0f) : (direction = 1.0f);
 
     Vertex v0;
     v0.position = { x, y, z };
     v0.texcoords = { 0.0f, 0.0f };
-
+    v0.normal = { 0.0f, direction, 0.0f };
 
     Vertex v1;
     v1.position = { x + size, y, z };
     v1.texcoords = { 1.0f, 0.0f };
-
+    v1.normal = { 0.0f, direction, 0.0f };
 
     Vertex v2;
     v2.position = { x + size, y, z + size };
     v2.texcoords = { 1.0f, 1.0f };
-
+    v2.normal = { 0.0f, direction, 0.0f };
 
     Vertex v3;
     v3.position = { x, y, z + size };
     v3.texcoords = { 0.0f, 1.0f };
-
+    v3.normal = { 0.0f, direction, 0.0f };
 
     return { v0,v1,v2,v3 };
 }
@@ -230,6 +240,7 @@ int main()
     VertexBufferLayout layout;
     layout.Push<float>(3);//vertex
     layout.Push<float>(2);//texcoord
+    layout.Push<float>(3);//normal
     va.AddBuffer(vb, layout);
 
     IndexBuffer ib(indices, 36);
@@ -247,6 +258,8 @@ int main()
     shader1.SetUniform1i("u_Texture2", 0);
     shader1.SetUniform3f("ObjectColor", glm::vec3(1.0f, 0.5f, 0.31f));//珊瑚红
     shader1.SetUniform3f("LightColor", glm::vec3(1.0f, 1.0f, 1.0f));//白
+    shader1.SetUniform3f("LightPos", glm::vec3(0.5f, 0.5f, 0.5f));//光照位置
+    shader1.SetUniform3f("ViewPos", cameraPos);//观察者（相机位置）
     shader2.Bind();
 
     va.Unbind();
@@ -276,20 +289,20 @@ int main()
  
         {
             shader1.Bind(); 
-            glm::mat4 model = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime() * glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+            glm::mat4 model = glm::mat4(1.0f);
             glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
             glm::mat4 proj = glm::perspective(aspect, 800.0f / 600.0f, 0.1f, 100.0f);
             glm::mat4 MVP = proj * view * model;
+            shader1.SetUniform3f("LightPos", glm::vec3(sin(glfwGetTime())+0.5f, sin(glfwGetTime()) + 0.5f, 0.5f));//光照位置
             shader1.SetUniformMat4("u_MVP", MVP);
             render.Draw(va, ib, shader1);
         }
 
         {
-            shader2.Bind();
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));//光照的位置
+            shader2.Bind(); 
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f + sin(glfwGetTime()), sin(glfwGetTime()) + 0.5f, 0.5f));//光照的位置
             model = glm::scale(model, glm::vec3(0.2f));
-            model = glm::rotate(model, (float)glfwGetTime() * glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-            glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+            glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f));
             glm::mat4 proj = glm::perspective(aspect, 800.0f / 600.0f, 0.1f, 100.0f);
             glm::mat4 MVP = proj * view * model;
             shader2.SetUniformMat4("u_MVP", MVP);
