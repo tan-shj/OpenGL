@@ -17,8 +17,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 // Camera
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraPos = glm::vec3(3.0f, 3.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(-1.0f, -1.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 GLfloat yaw = -90.0f;	// Yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right (due to how Eular angles work) so we initially rotate a bit to the left.
@@ -248,18 +248,15 @@ int main()
     Shader shader1("res/Shader/Basic.shader");
     Shader shader2("res/Shader/Light.shader");
 
-    Texture texture1("res/Texture/OpenGL.jpg", GL_REPEAT);
-    Texture texture2("res/Texture/ChernoLogo.png",GL_REPEAT);
+    Texture texture1("res/Texture/container2.png", GL_REPEAT);
+    Texture texture2("res/Texture/container2_specular.png", GL_REPEAT);
     texture1.Bind(0);
     texture2.Bind(1);
 
     shader1.Bind();
-    shader1.SetUniform1i("u_Texture1", 0);
-    shader1.SetUniform1i("u_Texture2", 0);
-    shader1.SetUniform3f("material.ambient",  glm::vec3(1.0f, 0.5f, 0.31f));//通常设置为物体颜色  材料环境光照
-    shader1.SetUniform3f("material.diffuse",  glm::vec3(1.0f, 0.5f, 0.31f));//通常设置为物体颜色  材料环境漫反射
-    shader1.SetUniform3f("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));//物体受到镜面光照影响的颜色  镜面（反射）高光
-    shader1.SetUniform1f("material.shininess", 25.0f);//影响高光的半径
+    shader1.SetUniform1i("material.diffuse", 0);
+    shader1.SetUniform1i("material.specular", 1);//物体受到镜面光照影响的颜色  镜面（反射）高光
+    shader1.SetUniform1f("material.shininess", 64.0f);//影响高光的半径
     shader1.SetUniform3f("light.ambient",  glm::vec3(0.6f, 0.6f, 0.6f));//光的环境强度
     shader1.SetUniform3f("light.diffuse",  glm::vec3(0.6f, 0.6f, 0.6f));//光的漫反射强度
     shader1.SetUniform3f("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));//光的镜面反射强度
