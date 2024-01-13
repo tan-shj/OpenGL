@@ -3,7 +3,7 @@
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 texCoord;
-layout(location = 1) in vec3 normal;
+layout(location = 2) in vec3 normal;
 
 out vec2 v_TexCoord;
 out vec3 Normal;
@@ -33,6 +33,24 @@ void main()
 #shader fragment
 #version 330 core
 
+struct Material
+{
+    vec3 ambient;//环境因子  越大越鲜艳
+    vec3 diffuse;
+    vec3 specular;//越大光照强度越明亮
+    float shininess;
+};
+uniform Material material;
+
+struct Light
+{
+    vec3 position;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+uniform Light light;
+
 out vec4 color;
 
 in vec2 v_TexCoord;
@@ -41,9 +59,6 @@ in vec3 FragPos;
 
 uniform sampler2D u_Texture1;
 uniform sampler2D u_Texture2;
-uniform vec3 ObjectColor;
-uniform vec3 LightColor;
-uniform vec3 LightPos;
 uniform vec3 ViewPos;
 
 //观察空间
@@ -54,22 +69,20 @@ void main()
 	//Texture
 	vec4 texColor = mix(texture(u_Texture1, v_TexCoord), texture(u_Texture2, v_TexCoord), 0.2);
 	//环境光照 Ambient
-	float AmbientStrength = 0.1f;//环境因子  越大越鲜艳
-	vec3 ambient = AmbientStrength * LightColor;
+	vec3 ambient = material.ambient * light.ambient;
 	//漫反射光照 Diffuse 
     vec3 norm = normalize(Normal);//标准化法向量
-    vec3 lightDir = normalize(LightPos - FragPos);//光的方向
+    vec3 lightDir = normalize(light.position - FragPos);//光的方向
     float diff = max(dot(norm, lightDir), 0.0);//散射因子
-    vec3 diffuse = diff * LightColor;
+    vec3 diffuse = material.diffuse * diff * light.diffuse;
 	//镜面高光specular highlight
-	float SpecularStrength = 0.5f;//越大光照强度越明亮
 	vec3 viewDir = normalize(ViewPos - FragPos);//视线方向坐标
 	//vec3 viewDir = normalize(- FragPos);//视线方向坐标
 	vec3 reflectDir = reflect(-lightDir, norm);//反射坐标  reflect函数要求的第一个是从光源指向片段位置的向量,第二个参数要求是一个法向量
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);//高光的发光值32，越大反射能力越强，散射越小，高光点越小
-	vec3 specular = SpecularStrength * spec * LightColor;
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);//高光的发光值32，越大反射能力越强，散射越小，高光点越小
+	vec3 specular = material.specular * spec * light.specular;
 
-	color = texColor * vec4((ambient + diffuse + specular) * ObjectColor, 1.0f);
+	color = texColor * vec4((ambient + diffuse + specular), 1.0f);
 };
 
 //Gouraud光照替换冯氏光照

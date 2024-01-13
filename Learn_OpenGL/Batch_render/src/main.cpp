@@ -256,9 +256,14 @@ int main()
     shader1.Bind();
     shader1.SetUniform1i("u_Texture1", 0);
     shader1.SetUniform1i("u_Texture2", 0);
-    shader1.SetUniform3f("ObjectColor", glm::vec3(1.0f, 0.5f, 0.31f));//珊瑚红
-    shader1.SetUniform3f("LightColor", glm::vec3(1.0f, 1.0f, 1.0f));//白
-    shader1.SetUniform3f("LightPos", glm::vec3(0.5f, 0.5f, 0.5f));//光照位置
+    shader1.SetUniform3f("material.ambient",  glm::vec3(1.0f, 0.5f, 0.31f));//通常设置为物体颜色  材料环境光照
+    shader1.SetUniform3f("material.diffuse",  glm::vec3(1.0f, 0.5f, 0.31f));//通常设置为物体颜色  材料环境漫反射
+    shader1.SetUniform3f("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));//物体受到镜面光照影响的颜色  镜面（反射）高光
+    shader1.SetUniform1f("material.shininess", 25.0f);//影响高光的半径
+    shader1.SetUniform3f("light.ambient",  glm::vec3(0.6f, 0.6f, 0.6f));//光的环境强度
+    shader1.SetUniform3f("light.diffuse",  glm::vec3(0.6f, 0.6f, 0.6f));//光的漫反射强度
+    shader1.SetUniform3f("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));//光的镜面反射强度
+    shader1.SetUniform3f("light.position", glm::vec3(0.5f, 0.5f, 0.5f));//光照位置
     shader1.SetUniform3f("ViewPos", cameraPos);//观察者（相机位置）
     shader2.Bind();
 
@@ -288,19 +293,26 @@ int main()
         texture2.Bind(1);
  
         {
+            //glm::vec3 lightColor;
+            //lightColor.x = sin(glfwGetTime() * 2.0f);
+            //lightColor.y = sin(glfwGetTime() * 0.7f);
+            //lightColor.z = sin(glfwGetTime() * 1.3f);
+            //glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+            //glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
             shader1.Bind(); 
             glm::mat4 model = glm::mat4(1.0f);
             glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
             glm::mat4 proj = glm::perspective(aspect, 800.0f / 600.0f, 0.1f, 100.0f);
             glm::mat4 MVP = proj * view * model;
-            shader1.SetUniform3f("LightPos", glm::vec3(sin(glfwGetTime())+0.5f, sin(glfwGetTime()) + 0.5f, 0.5f));//光照位置
+            //shader1.SetUniform3f("light.ambient", ambientColor);
+            //shader1.SetUniform3f("light.diffuse", diffuseColor);
             shader1.SetUniformMat4("u_MVP", MVP);
             render.Draw(va, ib, shader1);
         }
 
         {
             shader2.Bind(); 
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f + sin(glfwGetTime()), sin(glfwGetTime()) + 0.5f, 0.5f));//光照的位置
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));//光照的位置
             model = glm::scale(model, glm::vec3(0.2f));
             glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f));
             glm::mat4 proj = glm::perspective(aspect, 800.0f / 600.0f, 0.1f, 100.0f);
