@@ -17,8 +17,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 // Camera
-glm::vec3 cameraPos = glm::vec3(3.0f, 3.0f, 3.0f);
-glm::vec3 cameraFront = glm::vec3(-1.0f, -1.0f, -1.0f);
+glm::vec3 cameraPos = glm::vec3(2.0f, 2.0f, 2.0f);
+glm::vec3 cameraFront = glm::vec3(-2.0f, -2.0f, -2.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 GLfloat yaw = -90.0f;	// Yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right (due to how Eular angles work) so we initially rotate a bit to the left.
@@ -290,19 +290,11 @@ int main()
         texture2.Bind(1);
  
         {
-            //glm::vec3 lightColor;
-            //lightColor.x = sin(glfwGetTime() * 2.0f);
-            //lightColor.y = sin(glfwGetTime() * 0.7f);
-            //lightColor.z = sin(glfwGetTime() * 1.3f);
-            //glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
-            //glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
             shader1.Bind(); 
             glm::mat4 model = glm::mat4(1.0f);
-            glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+            glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);//摄像机位置、目标位置、上向量
             glm::mat4 proj = glm::perspective(aspect, 800.0f / 600.0f, 0.1f, 100.0f);
             glm::mat4 MVP = proj * view * model;
-            //shader1.SetUniform3f("light.ambient", ambientColor);
-            //shader1.SetUniform3f("light.diffuse", diffuseColor);
             shader1.SetUniformMat4("u_MVP", MVP);
             render.Draw(va, ib, shader1);
         }
