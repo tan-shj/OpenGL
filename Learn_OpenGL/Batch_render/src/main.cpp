@@ -250,12 +250,15 @@ int main()
 
     Texture texture1("res/Texture/container2.png", GL_REPEAT);
     Texture texture2("res/Texture/container2_specular.png", GL_REPEAT);
+    Texture texture3("res/Texture/matrix.jpg", GL_REPEAT);
     texture1.Bind(0);
     texture2.Bind(1);
+    texture3.Bind(2);
 
     shader1.Bind();
     shader1.SetUniform1i("material.diffuse", 0);
     shader1.SetUniform1i("material.specular", 1);//物体受到镜面光照影响的颜色  镜面（反射）高光
+    shader1.SetUniform1i("material.emission", 2);//放射贴图
     shader1.SetUniform1f("material.shininess", 64.0f);//影响高光的半径
     shader1.SetUniform3f("light.ambient",  glm::vec3(0.6f, 0.6f, 0.6f));//光的环境强度
     shader1.SetUniform3f("light.diffuse",  glm::vec3(0.6f, 0.6f, 0.6f));//光的漫反射强度
@@ -271,6 +274,7 @@ int main()
     shader2.Unbind();
     texture1.Unbind();
     texture2.Unbind();
+    texture3.Unbind();
 
     Render render;
 
@@ -288,6 +292,7 @@ int main()
         
         texture1.Bind(0);
         texture2.Bind(1);
+        texture3.Bind(2);
  
         {
             shader1.Bind(); 

@@ -27,6 +27,7 @@ struct Material
 {
     sampler2D diffuse;//ambient = diffuse;环境因子  越大越鲜艳
     sampler2D specular;//越大光照强度越明亮
+    sampler2D emission;//放射贴图emission
     float shininess;
 };
 
@@ -63,7 +64,10 @@ void main()
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);//高光的发光值32，越大反射能力越强，散射越小，高光点越小
 	vec3 specular = spec * light.specular * vec3(texture(material.specular, v_TexCoord));
 
-	color =  vec4((ambient + diffuse + specular), 1.0f);
+    //放射贴图emission map
+    vec3 emission = vec3(texture(material.emission, v_TexCoord));
+
+	color =  vec4((ambient + diffuse + specular + emission), 1.0f);
 };
 
 //Gouraud光照替换冯氏光照
