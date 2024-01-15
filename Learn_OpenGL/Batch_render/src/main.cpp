@@ -17,8 +17,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 // Camera
-glm::vec3 cameraPos = glm::vec3(5.0f, 5.0f, 5.0f);
-glm::vec3 cameraFront = glm::vec3(-5.0f, -5.0f, -5.0f);
+glm::vec3 cameraPos = glm::vec3(5.0f, 0.0f, 5.0f);
+glm::vec3 cameraFront = glm::vec3(-5.0f, 0.0f, -5.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 GLfloat yaw = -90.0f;	// Yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right (due to how Eular angles work) so we initially rotate a bit to the left.
@@ -258,15 +258,15 @@ int main()
     shader1.Bind();
     shader1.SetUniform1i("material.diffuse", 0);
     shader1.SetUniform1i("material.specular", 1);//物体受到镜面光照影响的颜色  镜面（反射）高光
-    shader1.SetUniform1i("material.emission", 2);//放射贴图
     shader1.SetUniform1f("material.shininess", 64.0f);//影响高光的半径
-    shader1.SetUniform3f("light.position",  glm::vec3(1.2f, 1.0f, 2.0f));//光的位置
-    shader1.SetUniform3f("light.ambient",  glm::vec3(0.6f, 0.6f, 0.6f));//光的环境强度
-    shader1.SetUniform3f("light.diffuse",  glm::vec3(0.6f, 0.6f, 0.6f));//光的漫反射强度
+    shader1.SetUniform3f("light.ambient",  glm::vec3(1.0f, 1.0f, 1.0f));//光的环境强度
+    shader1.SetUniform3f("light.diffuse",  glm::vec3(0.8f, 0.8f, 0.8f));//光的漫反射强度
     shader1.SetUniform3f("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));//光的镜面反射强度
     shader1.SetUniform1f("light.constant", 1.0f);//常数项
     shader1.SetUniform1f("light.linear", 0.09f);//一次项
     shader1.SetUniform1f("light.quadratic", 0.032f);//二次项
+    shader1.SetUniform1f("light.cutoff", glm::cos(glm::radians(12.5f)));//聚光角度 内
+    shader1.SetUniform1f("light.outercutoff", glm::cos(glm::radians(17.5f)));//聚光角度 外
     
     shader2.Bind();
 
@@ -297,14 +297,15 @@ int main()
         
         shader1.Bind();
         shader1.SetUniform3f("ViewPos", cameraPos);//观察者（相机位置）
+        shader1.SetUniform3f("light.direction", cameraFront);//光的方向
+        shader1.SetUniform3f("light.position", cameraPos);//光的位置--指向物体
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);//摄像机位置、目标位置、上向量
-        glm::mat4 proj = glm::perspective(aspect, 800.0f / 600.0f, 0.1f, 100.0f);
+        glm::mat4 proj = glm::perspective(aspect, 800.0f / 600.0f, 0.1f, 100.0f); 
         
         {
             shader1.Bind(); 
             glm::mat4 model = glm::mat4(1.0f);
-            glm::mat4 MVP = proj * view * model;
-            shader1.SetUniformMat4("u_MVP", MVP);
+            shader1.SetUniformMat4("u_MVP", proj * view * model);
             render.Draw(va, ib, shader1);
         }
 
@@ -324,7 +325,7 @@ int main()
             model = glm::translate(model, glm::vec3(1.2f, 1.0f, 2.0f));
             model = glm::scale(model, glm::vec3(0.3f));
             shader2.SetUniformMat4("u_MVP", proj * view * model);
-            render.Draw(va, ib, shader2);
+            //render.Draw(va, ib, shader2);
         }
         glfwSwapBuffers(window);
     }
