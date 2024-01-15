@@ -17,8 +17,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 // Camera
-glm::vec3 cameraPos = glm::vec3(2.0f, 2.0f, 2.0f);
-glm::vec3 cameraFront = glm::vec3(-2.0f, -2.0f, -2.0f);
+glm::vec3 cameraPos = glm::vec3(5.0f, 5.0f, 5.0f);
+glm::vec3 cameraFront = glm::vec3(-5.0f, -5.0f, -5.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 GLfloat yaw = -90.0f;	// Yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right (due to how Eular angles work) so we initially rotate a bit to the left.
@@ -148,6 +148,8 @@ int main()
     glfwSetCursorPosCallback(window, mouse_callback);//鼠标
     glfwSetScrollCallback(window, scroll_callback);//滚轮
 
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK)
     {
@@ -250,21 +252,22 @@ int main()
 
     Texture texture1("res/Texture/container2.png", GL_REPEAT);
     Texture texture2("res/Texture/container2_specular.png", GL_REPEAT);
-    Texture texture3("res/Texture/matrix.jpg", GL_REPEAT);
     texture1.Bind(0);
     texture2.Bind(1);
-    texture3.Bind(2);
 
     shader1.Bind();
     shader1.SetUniform1i("material.diffuse", 0);
     shader1.SetUniform1i("material.specular", 1);//物体受到镜面光照影响的颜色  镜面（反射）高光
     shader1.SetUniform1i("material.emission", 2);//放射贴图
     shader1.SetUniform1f("material.shininess", 64.0f);//影响高光的半径
+    shader1.SetUniform3f("light.position",  glm::vec3(1.2f, 1.0f, 2.0f));//光的位置
     shader1.SetUniform3f("light.ambient",  glm::vec3(0.6f, 0.6f, 0.6f));//光的环境强度
     shader1.SetUniform3f("light.diffuse",  glm::vec3(0.6f, 0.6f, 0.6f));//光的漫反射强度
     shader1.SetUniform3f("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));//光的镜面反射强度
-    shader1.SetUniform3f("light.position", glm::vec3(0.5f, 0.5f, 0.5f));//光照位置
-    shader1.SetUniform3f("ViewPos", cameraPos);//观察者（相机位置）
+    shader1.SetUniform1f("light.constant", 1.0f);//常数项
+    shader1.SetUniform1f("light.linear", 0.09f);//一次项
+    shader1.SetUniform1f("light.quadratic", 0.032f);//二次项
+    
     shader2.Bind();
 
     va.Unbind();
@@ -274,7 +277,6 @@ int main()
     shader2.Unbind();
     texture1.Unbind();
     texture2.Unbind();
-    texture3.Unbind();
 
     Render render;
 
@@ -292,26 +294,36 @@ int main()
         
         texture1.Bind(0);
         texture2.Bind(1);
-        texture3.Bind(2);
- 
+        
+        shader1.Bind();
+        shader1.SetUniform3f("ViewPos", cameraPos);//观察者（相机位置）
+        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);//摄像机位置、目标位置、上向量
+        glm::mat4 proj = glm::perspective(aspect, 800.0f / 600.0f, 0.1f, 100.0f);
+        
         {
             shader1.Bind(); 
             glm::mat4 model = glm::mat4(1.0f);
-            glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);//摄像机位置、目标位置、上向量
-            glm::mat4 proj = glm::perspective(aspect, 800.0f / 600.0f, 0.1f, 100.0f);
             glm::mat4 MVP = proj * view * model;
             shader1.SetUniformMat4("u_MVP", MVP);
             render.Draw(va, ib, shader1);
         }
 
         {
-            shader2.Bind(); 
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));//光照的位置
-            model = glm::scale(model, glm::vec3(0.2f));
-            glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-            glm::mat4 proj = glm::perspective(aspect, 800.0f / 600.0f, 0.1f, 100.0f);
-            glm::mat4 MVP = proj * view * model;
-            shader2.SetUniformMat4("u_MVP", MVP);
+            shader1.Bind();
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(1.0f, 0.0f, 2.0f));
+            model = glm::rotate(model, glm::radians(45.0f), glm::vec3(1.0f, 0.3f, 0.5f));
+            model = glm::scale(model, glm::vec3(0.3f));
+            shader1.SetUniformMat4("u_MVP", proj * view * model);
+            render.Draw(va, ib, shader1);
+        }
+
+        {
+            shader2.Bind();
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(1.2f, 1.0f, 2.0f));
+            model = glm::scale(model, glm::vec3(0.3f));
+            shader2.SetUniformMat4("u_MVP", proj * view * model);
             render.Draw(va, ib, shader2);
         }
         glfwSwapBuffers(window);

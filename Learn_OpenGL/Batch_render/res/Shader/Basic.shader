@@ -34,9 +34,13 @@ struct Material
 struct Light
 {
     vec3 position;
+    vec3 direction;//该方向向量指向物体，下面计算的lightDir为指向光源的方向
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+    float constant;//常数项  衰减方程
+    float linear;//一次项
+    float quadratic;//二次项
 };
 
 out vec4 color;
@@ -55,7 +59,7 @@ void main()
 	vec3 ambient = light.ambient * vec3(texture(material.diffuse, v_TexCoord));
 	//漫反射光照 Diffuse 
     vec3 norm = normalize(Normal);//标准化法向量
-    vec3 lightDir = normalize(light.position - FragPos);//光的方向
+    vec3 lightDir = normalize(light.position - FragPos);//指向光源的方向
     float diff = max(dot(norm, lightDir), 0.0);//散射因子
     vec3 diffuse = diff * light.diffuse * vec3(texture(material.diffuse, v_TexCoord));
 	//镜面高光specular highlight
@@ -63,11 +67,16 @@ void main()
 	vec3 reflectDir = reflect(-lightDir, norm);//反射坐标  reflect函数要求的第一个是从光源指向片段位置的向量,第二个参数要求是一个法向量
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);//高光的发光值32，越大反射能力越强，散射越小，高光点越小
 	vec3 specular = spec * light.specular * vec3(texture(material.specular, v_TexCoord));
-
     //放射贴图emission map
     vec3 emission = vec3(texture(material.emission, v_TexCoord));
-
-	color =  vec4((ambient + diffuse + specular + emission), 1.0f);
+    //衰减
+    float distance = length(light.position - FragPos);
+    float attenuation = 1.0f / (light.constant + light.linear*distance +light.quadratic*(distance*distance));
+    ambient *= attenuation;
+    diffuse *= attenuation;
+    specular *= attenuation;
+	
+    color =  vec4((ambient + diffuse + specular + emission), 1.0f);
 };
 
 //Gouraud光照替换冯氏光照
