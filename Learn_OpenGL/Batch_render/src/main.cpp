@@ -259,15 +259,15 @@ int main()
     shader1.SetUniform1i("material.diffuse", 0);
     shader1.SetUniform1i("material.specular", 1);//物体受到镜面光照影响的颜色  镜面（反射）高光
     shader1.SetUniform1f("material.shininess", 64.0f);//影响高光的半径
-    shader1.SetUniform3f("light.ambient",  glm::vec3(1.0f, 1.0f, 1.0f));//光的环境强度
-    shader1.SetUniform3f("light.diffuse",  glm::vec3(0.8f, 0.8f, 0.8f));//光的漫反射强度
-    shader1.SetUniform3f("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));//光的镜面反射强度
-    shader1.SetUniform1f("light.constant", 1.0f);//常数项
-    shader1.SetUniform1f("light.linear", 0.09f);//一次项
-    shader1.SetUniform1f("light.quadratic", 0.032f);//二次项
-    shader1.SetUniform1f("light.cutoff", glm::cos(glm::radians(12.5f)));//聚光角度 内
-    shader1.SetUniform1f("light.outercutoff", glm::cos(glm::radians(17.5f)));//聚光角度 外
-    
+    shader1.SetUniform3f("spotLight.ambient",  glm::vec3(1.0f, 1.0f, 1.0f));//光的环境强度
+    shader1.SetUniform3f("spotLight.diffuse",  glm::vec3(0.8f, 0.8f, 0.8f));//光的漫反射强度
+    shader1.SetUniform3f("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));//光的镜面反射强度
+    shader1.SetUniform1f("spotLight.constant", 1.0f);//常数项
+    shader1.SetUniform1f("spotLight.linear", 0.09f);//一次项
+    shader1.SetUniform1f("spotLight.quadratic", 0.032f);//二次项
+    shader1.SetUniform1f("spotLight.cutoff", glm::cos(glm::radians(12.5f)));//聚光角度 内
+    shader1.SetUniform1f("spotLight.outercutoff", glm::cos(glm::radians(17.5f)));//聚光角度 外
+
     shader2.Bind();
 
     va.Unbind();
@@ -297,8 +297,8 @@ int main()
         
         shader1.Bind();
         shader1.SetUniform3f("ViewPos", cameraPos);//观察者（相机位置）
-        shader1.SetUniform3f("light.direction", cameraFront);//光的方向
-        shader1.SetUniform3f("light.position", cameraPos);//光的位置--指向物体
+        shader1.SetUniform3f("spotLight.direction", cameraFront);//光的方向
+        shader1.SetUniform3f("spotLight.position", cameraPos);//光的位置--指向物体
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);//摄像机位置、目标位置、上向量
         glm::mat4 proj = glm::perspective(aspect, 800.0f / 600.0f, 0.1f, 100.0f); 
         
