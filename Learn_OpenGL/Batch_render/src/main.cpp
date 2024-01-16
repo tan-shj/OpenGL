@@ -214,6 +214,14 @@ int main()
        20,  21, 22, 22, 23, 20
     };
 
+    // Positions of the point lights
+    glm::vec3 pointLightPositions[] = {
+        glm::vec3( 0.7f,  0.2f,  2.0f),
+        glm::vec3( 2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f,  2.0f, -12.0f),
+        glm::vec3( 0.0f,  0.0f, -3.0f)
+    };
+
     auto q0 = CreatQuadz(-0.5f, -0.5f, -0.5f);
     auto q1 = CreatQuadz(-0.5f, -0.5f,  0.5f);
     auto q2 = CreatQuadx(-0.5f, -0.5f, -0.5f);
@@ -259,14 +267,51 @@ int main()
     shader1.SetUniform1i("material.diffuse", 0);
     shader1.SetUniform1i("material.specular", 1);//物体受到镜面光照影响的颜色  镜面（反射）高光
     shader1.SetUniform1f("material.shininess", 64.0f);//影响高光的半径
-    shader1.SetUniform3f("spotLight.ambient",  glm::vec3(1.0f, 1.0f, 1.0f));//光的环境强度
-    shader1.SetUniform3f("spotLight.diffuse",  glm::vec3(0.8f, 0.8f, 0.8f));//光的漫反射强度
-    shader1.SetUniform3f("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));//光的镜面反射强度
-    shader1.SetUniform1f("spotLight.constant", 1.0f);//常数项
-    shader1.SetUniform1f("spotLight.linear", 0.09f);//一次项
-    shader1.SetUniform1f("spotLight.quadratic", 0.032f);//二次项
-    shader1.SetUniform1f("spotLight.cutoff", glm::cos(glm::radians(12.5f)));//聚光角度 内
-    shader1.SetUniform1f("spotLight.outercutoff", glm::cos(glm::radians(17.5f)));//聚光角度 外
+    //shader1.SetUniform3f("spotLight.ambient",  glm::vec3(1.0f, 1.0f, 1.0f));//光的环境强度
+    //shader1.SetUniform3f("spotLight.diffuse",  glm::vec3(0.8f, 0.8f, 0.8f));//光的漫反射强度
+    //shader1.SetUniform3f("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));//光的镜面反射强度
+    //shader1.SetUniform1f("spotLight.constant", 1.0f);//常数项
+    //shader1.SetUniform1f("spotLight.linear", 0.09f);//一次项
+    //shader1.SetUniform1f("spotLight.quadratic", 0.032f);//二次项
+    //shader1.SetUniform1f("spotLight.cutoff", glm::cos(glm::radians(12.5f)));//聚光角度 内
+    //shader1.SetUniform1f("spotLight.outercutoff", glm::cos(glm::radians(17.5f)));//聚光角度 外
+
+    shader1.SetUniform3f("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
+    shader1.SetUniform3f("dirLight.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+    shader1.SetUniform3f("dirLight.diffuse", glm::vec3(0.4f, 0.4f, 0.4f));
+    shader1.SetUniform3f("dirLight.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+
+    shader1.SetUniform3f("pointLights[0].position", pointLightPositions[0]);
+    shader1.SetUniform3f("pointLights[0].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+    shader1.SetUniform3f("pointLights[0].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+    shader1.SetUniform3f("pointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader1.SetUniform1f("pointLights[0].constant", 1.0f);
+    shader1.SetUniform1f("pointLights[0].linear", 0.09f);
+    shader1.SetUniform1f("pointLights[0].quadratic", 0.032f);
+
+    shader1.SetUniform3f("pointLights[1].position", pointLightPositions[1]);
+    shader1.SetUniform3f("pointLights[1].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+    shader1.SetUniform3f("pointLights[1].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+    shader1.SetUniform3f("pointLights[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader1.SetUniform1f("pointLights[1].constant", 1.0f);
+    shader1.SetUniform1f("pointLights[1].linear", 0.09f);
+    shader1.SetUniform1f("pointLights[1].quadratic", 0.032f);
+
+    shader1.SetUniform3f("pointLights[2].position", pointLightPositions[2]);
+    shader1.SetUniform3f("pointLights[2].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+    shader1.SetUniform3f("pointLights[2].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+    shader1.SetUniform3f("pointLights[2].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader1.SetUniform1f("pointLights[2].constant", 1.0f);
+    shader1.SetUniform1f("pointLights[2].linear", 0.09f);
+    shader1.SetUniform1f("pointLights[2].quadratic", 0.032f);
+
+    shader1.SetUniform3f("pointLights[3].position", pointLightPositions[3]);
+    shader1.SetUniform3f("pointLights[3].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+    shader1.SetUniform3f("pointLights[3].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+    shader1.SetUniform3f("pointLights[3].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader1.SetUniform1f("pointLights[3].constant", 1.0f);
+    shader1.SetUniform1f("pointLights[3].linear", 0.09f);
+    shader1.SetUniform1f("pointLights[3].quadratic", 0.032f);
 
     shader2.Bind();
 
@@ -297,8 +342,8 @@ int main()
         
         shader1.Bind();
         shader1.SetUniform3f("ViewPos", cameraPos);//观察者（相机位置）
-        shader1.SetUniform3f("spotLight.direction", cameraFront);//光的方向
-        shader1.SetUniform3f("spotLight.position", cameraPos);//光的位置--指向物体
+        //shader1.SetUniform3f("spotLight.direction", cameraFront);//光的方向
+        //shader1.SetUniform3f("spotLight.position", cameraPos);//光的位置--指向物体
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);//摄像机位置、目标位置、上向量
         glm::mat4 proj = glm::perspective(aspect, 800.0f / 600.0f, 0.1f, 100.0f); 
         

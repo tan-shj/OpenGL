@@ -93,12 +93,12 @@ void main()
     vec3 norm = normalize(Normal);//标准化法向量
     vec3 viewDir = normalize(ViewPos - FragPos);//视线方向坐标
     //计算平行光照
-    //vec3 result = CalcDirLight(dirLight, norm, viewDir);
+    vec3 result = CalcDirLight(dirLight, norm, viewDir);
     //计算顶点光照
-    //for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        //result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
+    for(int i = 0; i < NR_POINT_LIGHTS; i++)
+        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
     //计算聚光灯SpotLight
-    vec3 result = CalcSpotLight(spotLight, norm, FragPos, viewDir);
+    //vec3 result = CalcSpotLight(spotLight, norm, FragPos, viewDir);
 
     color = vec4(result, 1.0f);
 };
