@@ -93,13 +93,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLEW\include\;$(SolutionDir)Dependencies\GLFW\include\;$(SolutionDir)Batch_render\src\vendor\;$(SolutionDir)Batch_render\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLEW\include\;$(SolutionDir)Dependencies\Assimp;$(SolutionDir)Dependencies\GLFW\include\;$(SolutionDir)Batch_render\src\vendor\;$(SolutionDir)Batch_render\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;GDI32.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp;$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc140-mt.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;GDI32.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -110,15 +110,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLEW\include\;$(SolutionDir)Dependencies\GLFW\include\;$(SolutionDir)Batch_render\src\vendor\;$(SolutionDir)Batch_render\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLEW\include\;$(SolutionDir)Dependencies\Assimp;$(SolutionDir)Dependencies\GLFW\include\;$(SolutionDir)Batch_render\src\vendor\;$(SolutionDir)Batch_render\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;GDI32.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp;$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc140-mt.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;GDI32.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -127,13 +127,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLEW\include\;$(SolutionDir)Dependencies\GLFW\include\;$(SolutionDir)Batch_render\src\vendor\;$(SolutionDir)Batch_render\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLEW\include\;$(SolutionDir)Dependencies\Assimp;$(SolutionDir)Dependencies\GLFW\include\;$(SolutionDir)Batch_render\src\vendor\;$(SolutionDir)Batch_render\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;GDI32.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp;$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc140-mt.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;GDI32.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -144,27 +144,26 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLEW\include\;$(SolutionDir)Dependencies\GLFW\include\;$(SolutionDir)Batch_render\src\vendor\;$(SolutionDir)Batch_render\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLEW\include\;$(SolutionDir)Dependencies\Assimp;$(SolutionDir)Dependencies\GLFW\include\;$(SolutionDir)Batch_render\src\vendor\;$(SolutionDir)Batch_render\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;GDI32.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp;$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc140-mt.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;GDI32.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\Model_main.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\tests\Test.cpp" />
-    <ClCompile Include="src\tests\TestBatchRender.cpp" />
     <ClCompile Include="src\tests\TestClearColor.cpp" />
-    <ClCompile Include="src\tests\TestTexture2D.cpp" />
-    <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui_demo.cpp" />
@@ -178,14 +177,51 @@
     <ClCompile Include="src\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\IndexBuffer.h" />
+    <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\tests\Test.h" />
-    <ClInclude Include="src\tests\TestBatchRender.h" />
     <ClInclude Include="src\tests\TestClearColor.h" />
-    <ClInclude Include="src\tests\TestTexture2D.h" />
-    <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\vendor\assimp\ai_assert.h" />
+    <ClInclude Include="src\vendor\assimp\anim.h" />
+    <ClInclude Include="src\vendor\assimp\camera.h" />
+    <ClInclude Include="src\vendor\assimp\cexport.h" />
+    <ClInclude Include="src\vendor\assimp\cfileio.h" />
+    <ClInclude Include="src\vendor\assimp\cimport.h" />
+    <ClInclude Include="src\vendor\assimp\color4.h" />
+    <ClInclude Include="src\vendor\assimp\Compiler\poppack1.h" />
+    <ClInclude Include="src\vendor\assimp\Compiler\pstdint.h" />
+    <ClInclude Include="src\vendor\assimp\Compiler\pushpack1.h" />
+    <ClInclude Include="src\vendor\assimp\config.h" />
+    <ClInclude Include="src\vendor\assimp\DefaultLogger.hpp" />
+    <ClInclude Include="src\vendor\assimp\defs.h" />
+    <ClInclude Include="src\vendor\assimp\Exporter.hpp" />
+    <ClInclude Include="src\vendor\assimp\Importer.hpp" />
+    <ClInclude Include="src\vendor\assimp\importerdesc.h" />
+    <ClInclude Include="src\vendor\assimp\IOStream.hpp" />
+    <ClInclude Include="src\vendor\assimp\IOSystem.hpp" />
+    <ClInclude Include="src\vendor\assimp\light.h" />
+    <ClInclude Include="src\vendor\assimp\Logger.hpp" />
+    <ClInclude Include="src\vendor\assimp\LogStream.hpp" />
+    <ClInclude Include="src\vendor\assimp\material.h" />
+    <ClInclude Include="src\vendor\assimp\matrix3x3.h" />
+    <ClInclude Include="src\vendor\assimp\matrix4x4.h" />
+    <ClInclude Include="src\vendor\assimp\mesh.h" />
+    <ClInclude Include="src\vendor\assimp\metadata.h" />
+    <ClInclude Include="src\vendor\assimp\NullLogger.hpp" />
+    <ClInclude Include="src\vendor\assimp\port\AndroidJNI\AndroidJNIIOSystem.h" />
+    <ClInclude Include="src\vendor\assimp\postprocess.h" />
+    <ClInclude Include="src\vendor\assimp\ProgressHandler.hpp" />
+    <ClInclude Include="src\vendor\assimp\quaternion.h" />
+    <ClInclude Include="src\vendor\assimp\scene.h" />
+    <ClInclude Include="src\vendor\assimp\texture.h" />
+    <ClInclude Include="src\vendor\assimp\types.h" />
+    <ClInclude Include="src\vendor\assimp\vector2.h" />
+    <ClInclude Include="src\vendor\assimp\vector3.h" />
+    <ClInclude Include="src\vendor\assimp\version.h" />
     <ClInclude Include="src\vendor\glm\common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_vector_relational.hpp" />
@@ -484,6 +520,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+    <None Include="src\vendor\assimp\color4.inl" />
+    <None Include="src\vendor\assimp\material.inl" />
+    <None Include="src\vendor\assimp\matrix3x3.inl" />
+    <None Include="src\vendor\assimp\matrix4x4.inl" />
+    <None Include="src\vendor\assimp\quaternion.inl" />
+    <None Include="src\vendor\assimp\vector2.inl" />
+    <None Include="src\vendor\assimp\vector3.inl" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />
