@@ -2,25 +2,26 @@
 #version 330 core
 
 layout(location = 0) in vec3 position;
-layout(location = 1) in vec2 texCoord;
-layout(location = 2) in vec3 normal;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 texCoord;
 
 out vec2 v_TexCoord;
 out vec3 Normal;
 out vec3 FragPos;
 
-uniform mat4 u_MVP;
+uniform mat4 u_VP;
+uniform mat4 u_model;
 
 void main()
 {
-	gl_Position = u_MVP * vec4(position, 1.0f);
+    FragPos = vec3(u_model * vec4(position, 1.0f));
+	gl_Position = u_VP * vec4(FragPos, 1.0f);
 	v_TexCoord = texCoord;
 	//世界空间中计算
-	FragPos = vec3(u_MVP * vec4(position, 1.0f));
-	Normal = mat3(transpose(inverse(u_MVP))) * normal; 
+	Normal = mat3(transpose(inverse(u_model))) * normal; 
 };
 
-
+//////////////////////////////////////////////////////////////////////////////////////
 
 #shader fragment
 #version 330 core
@@ -93,12 +94,12 @@ void main()
     vec3 norm = normalize(Normal);//标准化法向量
     vec3 viewDir = normalize(ViewPos - FragPos);//视线方向坐标
     //计算平行光照
-    vec3 result = CalcDirLight(dirLight, norm, viewDir);
+    //vec3 result = CalcDirLight(dirLight, norm, viewDir);
     //计算顶点光照
-    for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
+    //for(int i = 0; i < NR_POINT_LIGHTS; i++)
+        //result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
     //计算聚光灯SpotLight
-    //vec3 result = CalcSpotLight(spotLight, norm, FragPos, viewDir);
+    vec3 result = CalcSpotLight(spotLight, norm, FragPos, viewDir);
 
     color = vec4(result, 1.0f);
 };

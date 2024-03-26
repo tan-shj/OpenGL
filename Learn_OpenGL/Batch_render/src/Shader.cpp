@@ -16,7 +16,8 @@ Shader::Shader(const std::string& filepath)
 
 Shader::~Shader()
 {
-    GLCall(glDeleteProgram(m_RendererID));
+    //GLCall(glDeleteProgram(m_RendererID));
+    glDeleteProgram(m_RendererID);
 }
 
 ShaderProgramSource Shader::ParseShader(const std::string& filepath)
@@ -91,7 +92,8 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
 
 void Shader::Bind() const
 {
-    GLCall(glUseProgram(m_RendererID));
+    //GLCall(glUseProgram(m_RendererID));
+    glUseProgram(m_RendererID);
 }
 
 void Shader::Unbind() const
@@ -144,7 +146,8 @@ void Shader::SetUniformMat3(const std::string& name, const glm::mat3& matrix)
 void Shader::SetUniformMat4(const std::string& name, const glm::mat4& matrix)
 {
     GLint location = GetUniformLocation(name);
-    GLCall(glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0]));
+    //GLCall(glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0]));
+    glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0]);
 }
 
 GLint Shader::GetUniformLocation(const std::string& name) const

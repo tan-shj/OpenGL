@@ -16,6 +16,9 @@ void main()
 	v_TextCoord = TexCoord;
 };
 
+
+//////////////////////////////////////////////////////////////////
+
 #shader fragment
 #version 330 core
 
