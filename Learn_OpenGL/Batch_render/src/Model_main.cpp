@@ -72,7 +72,7 @@ int main()
 
         processInput(window);
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.0f, 0.05f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glm::mat4 view = camera.GetViewMatrix();
@@ -94,7 +94,14 @@ int main()
         SpotLight_Shader.SetUniform1f("spotLight.quadratic", 0.032f);//二次项
         SpotLight_Shader.SetUniform1f("spotLight.cutoff", glm::cos(glm::radians(12.5f)));//聚光角度 内
         SpotLight_Shader.SetUniform1f("spotLight.outercutoff", glm::cos(glm::radians(17.5f)));//聚光角度 外
-        
+        SpotLight_Shader.SetUniform3f("pointLights[0].position", glm::vec3(0.0f, 0.0f, 2.0f));
+        SpotLight_Shader.SetUniform3f("pointLights[0].ambient", glm::vec3(1.0f, 1.0f, 1.0f));
+        SpotLight_Shader.SetUniform3f("pointLights[0].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+        SpotLight_Shader.SetUniform3f("pointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        SpotLight_Shader.SetUniform1f("pointLights[0].constant", 1.0f);
+        SpotLight_Shader.SetUniform1f("pointLights[0].linear", 0.09f);
+        SpotLight_Shader.SetUniform1f("pointLights[0].quadratic", 0.032f);
+
         shader.Bind();
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
